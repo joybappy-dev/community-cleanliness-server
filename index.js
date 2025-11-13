@@ -4,7 +4,20 @@ const port = process.env.PORT || 3000;
 const cors = require("cors");
 
 // MIDDLEWARE
-app.use(cors());
+
+const allowedOrigins = [
+  "http://localhost:5173",
+  "https://community-cleanliness-client.web.app",
+  "https://community-cleanliness-client.firebaseapp.com",
+];
+
+app.use(
+  cors({
+    origin: allowedOrigins,
+    credentials: true,
+  })
+);
+
 app.use(express.json());
 
 require("dotenv").config();
@@ -29,7 +42,7 @@ const client = new MongoClient(uri, {
 
 async function run() {
   try {
-    await client.connect();
+    // await client.connect();
     const db = client.db("cleanlinessDB");
     const issuesCollection = db.collection("issues");
     const contributionCollection = db.collection("contributions");
@@ -94,7 +107,7 @@ async function run() {
     });
 
     // Send a ping to confirm a successful connection
-    await client.db("admin").command({ ping: 1 });
+    // await client.db("admin").command({ ping: 1 });
     console.log(
       "Pinged your deployment. You successfully connected to MongoDB!"
     );
