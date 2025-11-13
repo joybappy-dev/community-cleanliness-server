@@ -70,6 +70,16 @@ async function run() {
       res.send(result);
     });
 
+    // Get all contributions by issue id
+    app.get("/issue/:id/contributions", async (req, res) => {
+      console.log("hitting");
+      const id = req.params.id;
+      const query = { issueId: id };
+      const cursor = contributionCollection.find(query);
+      const result = await cursor.toArray();
+      res.send(result);
+    });
+
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
     console.log(
