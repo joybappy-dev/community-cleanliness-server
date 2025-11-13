@@ -32,11 +32,19 @@ async function run() {
     await client.connect();
     const db = client.db("cleanlinessDB");
     const issuesCollection = db.collection("issues");
+    const contributionCollection = db.collection("contributions");
 
     // ADD ISSUE API
     app.post("/add-issue", async (req, res) => {
       const newIssue = req.body;
       const result = await issuesCollection.insertOne(newIssue);
+      res.send(result);
+    });
+
+    // Add Contribution API
+    app.post("/add-contribution", async (req, res) => {
+      const newContribution = req.body;
+      const result = await contributionCollection.insertOne(newContribution);
       res.send(result);
     });
 
@@ -55,11 +63,11 @@ async function run() {
     });
 
     // Get Issue By Id
-    app.get("/issue/:id", async (req, res) => {
+    app.get("/issue-details/:id", async (req, res) => {
       const id = req.params.id;
-      const query = {_id: new ObjectId(id)}
-      const result = await issuesCollection.findOne(query)
-      res.send(result)
+      const query = { _id: new ObjectId(id) };
+      const result = await issuesCollection.findOne(query);
+      res.send(result);
     });
 
     // Send a ping to confirm a successful connection
