@@ -4,7 +4,6 @@ const port = process.env.PORT || 3000;
 const cors = require("cors");
 
 // MIDDLEWARE
-
 const allowedOrigins = [
   "http://localhost:5173",
   "https://community-cleanliness-client.web.app",
@@ -111,6 +110,27 @@ async function run() {
       const id = req.params.id;
       const query = { _id: new ObjectId(id) };
       const result = await issuesCollection.deleteOne(query);
+      res.send(result);
+    });
+
+    // Update issue status
+    app.patch("/issue/update/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const update = req.body;
+      const result = await issuesCollection.updateOne(query, update);
+      res.send(result);
+    });
+
+    // Get contributions by email
+    app.get("/my-contributions", async (req, res) => {
+      const email = req.query.email;
+      const query = {};
+      if (email) {
+        query.email = email;
+      }
+      const cursor = contributionCollection.find(query);
+      const result = await cursor.toArray();
       res.send(result);
     });
 
