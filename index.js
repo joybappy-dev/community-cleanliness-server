@@ -80,6 +80,19 @@ async function run() {
       res.send(result);
     });
 
+    // Get all issue reported by current user
+    app.get("/my-issues", async (req, res) => {
+      const email = req.query.email;
+      const query = {};
+      if (email) {
+        query.email = email;
+      }
+
+      const cursor = issuesCollection.find(query);
+      const result = await cursor.toArray();
+      res.send(result);
+    });
+
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
     console.log(
