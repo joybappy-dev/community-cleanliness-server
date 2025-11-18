@@ -4,20 +4,6 @@ const port = process.env.PORT || 3000;
 const cors = require("cors");
 require("dotenv").config();
 
-// MIDDLEWARE
-// const allowedOrigins = [
-//   "http://localhost:5173",
-//   "https://community-cleanliness-client.web.app",
-//   "https://community-cleanliness-client.firebaseapp.com",
-// ];
-
-// app.use(
-//   cors({
-//     origin: allowedOrigins,
-//     credentials: true,
-//   })
-// );
-
 app.use(cors());
 app.use(express.json());
 
@@ -153,4 +139,4 @@ async function run() {
 }
 
 run().catch(console.dir);
-// module.exports = app;
+module.exports = app;
