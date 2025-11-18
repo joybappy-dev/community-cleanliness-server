@@ -27,7 +27,7 @@ const client = new MongoClient(uri, {
 
 async function run() {
   try {
-    // await client.connect();
+    await client.connect();
     const db = client.db("cleanlinessDB");
     const issuesCollection = db.collection("issues");
     const contributionCollection = db.collection("contributions");
@@ -125,15 +125,9 @@ async function run() {
       res.send(result);
     });
 
-    // Send a ping to confirm a successful connection
-    // await client.db("admin").command({ ping: 1 });
     console.log(
       "Pinged your deployment. You successfully connected to MongoDB!"
     );
-
-    app.listen(port, () => {
-      console.log("server runnign on port", port);
-    });
   } finally {
   }
 }
