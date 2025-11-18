@@ -2,24 +2,24 @@ const express = require("express");
 const app = express();
 const port = process.env.PORT || 3000;
 const cors = require("cors");
+require("dotenv").config();
 
 // MIDDLEWARE
-const allowedOrigins = [
-  "http://localhost:5173",
-  "https://community-cleanliness-client.web.app",
-  "https://community-cleanliness-client.firebaseapp.com",
-];
+// const allowedOrigins = [
+//   "http://localhost:5173",
+//   "https://community-cleanliness-client.web.app",
+//   "https://community-cleanliness-client.firebaseapp.com",
+// ];
 
-app.use(
-  cors({
-    origin: allowedOrigins,
-    credentials: true,
-  })
-);
+// app.use(
+//   cors({
+//     origin: allowedOrigins,
+//     credentials: true,
+//   })
+// );
 
+app.use(cors());
 app.use(express.json());
-
-require("dotenv").config();
 
 // CONNECTING TO MONGODB
 const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
@@ -117,8 +117,13 @@ async function run() {
     app.patch("/issue/update/:id", async (req, res) => {
       const id = req.params.id;
       const query = { _id: new ObjectId(id) };
+      if (!req.body) {
+        return;
+      }
       const update = req.body;
-      const result = await issuesCollection.updateOne(query, update);
+      const result = await issuesCollection.updateOne(query, {
+        $set: update,
+      });
       res.send(result);
     });
 
@@ -148,4 +153,4 @@ async function run() {
 }
 
 run().catch(console.dir);
-module.exports = app;
+// module.exports = app;
