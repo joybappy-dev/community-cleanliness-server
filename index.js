@@ -46,16 +46,33 @@ async function run() {
       res.send(result);
     });
 
-    // ALL ISSUES API
+    // ALL ISSUES API with Search and Pagination
     app.get("/all-issues", async (req, res) => {
-      const cursor = issuesCollection.find();
+      const page = parseInt(req.query.page) || 1;
+      const size = parseInt(req.query.size) || 8;
+      const search = req.query.search || ""; // Get search text from query
+    
+      // Create a search query object
+      // This looks for the search text inside the "title" field (case-insensitive)
+      const query = {
+        title: { $regex: search, $options: "i" }
+      };
+    
+      const skip = (page - 1) * size;
+    
+      // 1. Find issues matching the search, then skip and limit
+      const cursor = issuesCollection.find(query).skip(skip).limit(size);
       const result = await cursor.toArray();
-      res.send(result);
+    
+      // 2. Count only the documents that match the search query
+      const totalCount = await issuesCollection.countDocuments(query);
+    
+      res.send({ result, totalCount });
     });
 
     // LATEST ISSUES API
     app.get("/latest-issues", async (req, res) => {
-      const cursor = issuesCollection.find().limit(6).sort({ date: -1 });
+      const cursor = issuesCollection.find().limit(8).sort({ date: -1 });
       const result = await cursor.toArray();
       res.send(result);
     });
@@ -121,6 +138,13 @@ async function run() {
         query.email = email;
       }
       const cursor = contributionCollection.find(query);
+      const result = await cursor.toArray();
+      res.send(result);
+    });
+
+    // resolved issues
+    app.get("/resolved/issues", async (req, res) => {
+      const cursor = issuesCollection.find({ status: "Ended" });
       const result = await cursor.toArray();
       res.send(result);
     });
